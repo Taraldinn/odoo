@@ -34,6 +34,7 @@ RUN apt-get update \
         python3-num2words \
         python3-ofxparse \
         python3-openpyxl \
+        python3-openssl \
         python3-passlib \
         python3-pil \
         python3-polib \
@@ -61,10 +62,9 @@ RUN apt-get update \
 
 WORKDIR /opt/odoo
 
-COPY . .
+COPY --chown=odoo:odoo . .
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && chown -R odoo:odoo /opt/odoo
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER odoo
 EXPOSE 8069
