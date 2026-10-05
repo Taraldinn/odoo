@@ -13,5 +13,5 @@ exec python3 /opt/odoo/odoo-bin \
     --db_port="${POSTGRES_PORT:-5432}" \
     --db_user="${POSTGRES_USER:-odoo}" \
     --db_password="$POSTGRES_PASSWORD" \
-    --admin-passwd="$ODOO_ADMIN_PASSWORD" \
+    --admin_passwd="$ODOO_ADMIN_PASSWORD" \
     "$@"
