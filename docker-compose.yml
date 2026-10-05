@@ -8,16 +8,6 @@ services:
         condition: service_healthy
     ports:
       - "8069:8069"
-    command:
-      - --http-interface=0.0.0.0
-      - --http-port=8069
-      - --proxy-mode
-      - --data-dir=/var/lib/odoo
-      - --db_host=db
-      - --db_port=5432
-      - --db_user=${POSTGRES_USER:-odoo}
-      - --db_password=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      - --admin-passwd=${ODOO_ADMIN_PASSWORD:?ODOO_ADMIN_PASSWORD is required}
     volumes:
       - odoo-data:/var/lib/odoo
     healthcheck:

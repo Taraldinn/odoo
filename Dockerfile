@@ -62,9 +62,11 @@ RUN apt-get update \
 WORKDIR /opt/odoo
 
 COPY . .
-RUN chown -R odoo:odoo /opt/odoo
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && chown -R odoo:odoo /opt/odoo
 
 USER odoo
 EXPOSE 8069
 
-ENTRYPOINT ["python3", "/opt/odoo/odoo-bin"]
+ENTRYPOINT ["docker-entrypoint.sh"]
