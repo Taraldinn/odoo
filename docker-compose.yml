@@ -1,0 +1,51 @@
+services:
+  web:
+    build:
+      context: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    command:
+      - --http-interface=0.0.0.0
+      - --http-port=8069
+      - --proxy-mode
+      - --data-dir=/var/lib/odoo
+      - --db_host=db
+      - --db_port=5432
+      - --db_user=${POSTGRES_USER:-odoo}
+      - --db_password=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      - --admin-passwd=${ODOO_ADMIN_PASSWORD:?ODOO_ADMIN_PASSWORD is required}
+    volumes:
+      - odoo-data:/var/lib/odoo
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/health', timeout=5)
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  odoo-data:
+  postgres-data:
