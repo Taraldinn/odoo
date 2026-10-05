@@ -8,6 +8,10 @@ ODOO_CONFIG_FILE="${ODOO_CONFIG_FILE:-/tmp/odoo.conf}"
 umask 077
 printf '[options]\nadmin_passwd = %s\n' "$ODOO_ADMIN_PASSWORD" > "$ODOO_CONFIG_FILE"
 
+if [ -n "${POSTGRES_DB:-}" ]; then
+    set -- --database="$POSTGRES_DB" "$@"
+fi
+
 exec python3 /opt/odoo/odoo-bin \
     --config="$ODOO_CONFIG_FILE" \
     --http-interface=0.0.0.0 \
